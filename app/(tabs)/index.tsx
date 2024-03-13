@@ -1,46 +1,16 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
 import { View } from '@/components/Themed';
-import { useEffect, useState } from 'react';
 import { fetchTopRatedMovies } from '@/api/movies';
+import { useQuery } from '@tanstack/react-query';
+import MovieListItem from '@/components/MovieListItem';
 
-// Define an interface for the movie object
-interface Movie {
-  adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
-  id: number;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  release_date: string;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
-}
 
 export default function TabOneScreen() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      setIsLoading(true);
-
-      try {
-        const movies = await fetchTopRatedMovies();
-        setMovies(movies);
-      } catch (error) {
-        setError(error)
-      }
-
-      setIsLoading(false);
-    };
-    fetchMovies()
-  }, []);
+  const { data: movies, isLoading, error } = useQuery({
+    queryKey: ['movies'],
+    queryFn: fetchTopRatedMovies,
+  });
 
   if (isLoading) {
     return <ActivityIndicator />
@@ -54,11 +24,10 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <FlatList
         data={movies}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.title}</Text>
-          </View>
-        )}
+        numColumns={2}
+        contentContainerStyle={{ gap: 5, padding: 5 }}
+        columnWrapperStyle={{ gap: 5 }}
+        renderItem={({ item }) => <MovieListItem movie={item} />}
       />
     </View>
   );
@@ -67,7 +36,5 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
