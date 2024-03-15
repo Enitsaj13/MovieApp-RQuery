@@ -22,7 +22,7 @@ export default function TabOneScreen() {
     return <Text>{error.message}</Text>
   }
 
-  const movies = data?.pages.flat();
+  const movies = data?.pages.flat()
 
   return (
     <View style={styles.container}>
