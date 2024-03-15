@@ -16,8 +16,11 @@ interface RequestOptions {
     };
 }
 
-export const fetchTopRatedMovies = async (): Promise<Movie[]> => {
-    const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
+export const fetchTopRatedMovies = async ({ pageParam }: { pageParam: number }): Promise<Movie[]> => {
+    // if destruct, { pageParam }: { pageParam: number }
+    // if not pageParam: number
+
+    const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageParam}`;
     const options: RequestOptions = {
         method: 'GET',
         headers, // if same value, shortcut if that not put the declared variable
